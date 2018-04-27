@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>SaveBot</title>
+</head>
+
+<body>
+  <ul id="messages"></ul>
+  <form action="">
+    <input id="m" autocomplete="off" />
+    <button>Send</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+  <script>
+    let context = null;
+    $(function () {
+        var socket = io();
+        $('form').submit(function () {
+          socket.emit('chat message', {
+            context: context,
+            msg: $('#m').val(),
+          });
+          $('#messages').append($('<li>').text($('#m').val()));
+          $('#m').val('');
+          return false;
+        });
+
+        socket.on('chat message', function (response) {
+          context = response.context;
+          $('#messages').append($('<li>').text(response.msg));
+        });
+      });
+  </script>
+</body>
+
+</html>
